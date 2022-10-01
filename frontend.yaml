@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: de.icr.io/bicicletas-namespace/frontend-repo:1.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-secret
+              key: mongo-root-username
+        - name: DB_PASSWORD
+          valueFrom: 
+            secretKeyRef:
+              name: mongodb-secret
+              key: mongo-root-password
+        - name: DB_NAME
+          valueFrom: 
+            configMapKeyRef:
+              name: bicicletas-configmap
+              key: database_name
+        - name: DB_HOST
+          valueFrom: 
+            configMapKeyRef:
+              name: bicicletas-configmap
+              key: database_host
+        - name: DB_PORT
+          valueFrom: 
+            configMapKeyRef:
+              name: bicicletas-configmap
+              key: database_port

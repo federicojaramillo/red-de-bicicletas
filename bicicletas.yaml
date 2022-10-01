@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bicicletas-deployment
+  labels:
+    app: bicicletas
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bicicletas
+  template:
+    metadata:
+      labels:
+        app: bicicletas
+    spec:
+      containers:
+      - name: bicicletas
+        image: de.icr.io/bicicletas-namespace/bicicletas-repo:1.0
+        ports:
+        - containerPort: 8081
+        env:
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-secret
+              key: mongo-root-username
+        - name: DB_PASSWORD
+          valueFrom: 
+            secretKeyRef:
+              name: mongodb-secret
+              key: mongo-root-password
+        - name: DB_NAME
+          valueFrom: 
+            configMapKeyRef:
+              name: bicicletas-configmap
+              key: database_name
+        - name: DB_HOST
+          valueFrom: 
+            configMapKeyRef:
+              name: bicicletas-configmap
+              key: database_host
+        - name: DB_PORT
+          valueFrom: 
+            configMapKeyRef:
+              name: bicicletas-configmap
+              key: database_port
+        imagePullSecrets:
+          - name: all-icr-io

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bicicletas-configmap
+data:
+  database_name: bicicletas_db
+  database_host: mongodb
+  database_port: "27017"
